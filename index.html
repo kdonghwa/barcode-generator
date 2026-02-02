@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바코드 생성기</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .preview-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #barcodeCanvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #999;
+            font-size: 1.1em;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f5c6cb;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c3e6cb;
+            display: none;
+        }
+
+        /* 바코드 이력 스타일 */
+        .history-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h2 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: move;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .history-item.drag-over {
+            border-color: #28a745;
+            border-style: dashed;
+            background: #e8f5e9;
+        }
+
+        .history-item svg {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .history-text {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            word-break: break-all;
+            margin-bottom: 5px;
+        }
+
+        .history-type {
+            font-size: 0.7em;
+            color: #999;
+            text-align: center;
+        }
+
+        .history-delete {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            max-width: 20px;
+            min-height: 20px;
+            max-height: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+
+        .history-item:hover .history-delete {
+            opacity: 1;
+        }
+
+        .history-delete:hover {
+            background: #c82333;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .empty-history {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 1024px) {
+            .history-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .history-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                min-width: 100%;
+            }
+
+            .history-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 25px;
+            font-size: 0.85em;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏷️ 바코드 생성기</h1>
+        <p class="subtitle">Code128 / Code39 바코드를 생성하고 다운로드하세요</p>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="input-section">
+            <div class="form-group">
+                <label for="barcodeText">바코드 내용</label>
+                <input
+                    type="text"
+                    id="barcodeText"
+                    placeholder="예: ITEM-12345"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>바코드 타입</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="code128" name="barcodeType" value="CODE128" checked>
+                        <label for="code128" style="margin: 0; font-weight: normal;">Code128 (권장)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="code39" name="barcodeType" value="CODE39">
+                        <label for="code39" style="margin: 0; font-weight: normal;">Code39</label>
+                    </div>
+                </div>
+                <div class="help-text">
+                    <strong>Code128:</strong> 대소문자, 숫자, 특수문자 지원 (최대 80자)<br>
+                    <strong>Code39:</strong> 대문자, 숫자, 일부 특수문자만 지원 (최대 43자)
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="generateBarcode()">바코드 생성</button>
+                <button class="btn-secondary" onclick="clearAll()">초기화</button>
+            </div>
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <div class="welcome-message" id="welcomeMessage">
+                바코드 내용을 입력하고<br>"바코드 생성" 버튼을 클릭하세요
+            </div>
+            <svg id="barcodeCanvas" class="hidden"></svg>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-success" id="downloadBtn" onclick="downloadBarcode()" disabled>
+                이미지 다운로드 (PNG)
+            </button>
+        </div>
+
+        <!-- 바코드 이력 섹션 -->
+        <div class="history-section">
+            <div class="history-header">
+                <h2>📋 바코드 이력</h2>
+            </div>
+            <div id="historyGrid" class="history-grid">
+                <!-- 바코드 이력이 여기에 표시됩니다 -->
+            </div>
+            <div id="emptyHistory" class="empty-history">
+                아직 생성된 바코드가 없습니다
+            </div>
+        </div>
+
+        <div class="footer">
+            ⚡ 브라우저에서 바로 실행 | 설치 불필요 | 이력은 자동 저장됩니다
+        </div>
+    </div>
+
+    <script>
+        let currentBarcodeText = '';
+        let currentBarcodeType = 'CODE128';
+        let barcodeHistory = [];
+
+        // 페이지 로드 시 이력 불러오기
+        window.onload = function() {
+            loadHistory();
+            document.getElementById('barcodeText').focus();
+        };
+
+        // 엔터 키로 바코드 생성
+        document.getElementById('barcodeText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateBarcode();
+            }
+        });
+
+        // 이력 불러오기
+        function loadHistory() {
+            const saved = localStorage.getItem('barcodeHistory');
+            if (saved) {
+                barcodeHistory = JSON.parse(saved);
+                renderHistory();
+            }
+        }
+
+        // 이력 저장
+        function saveHistory() {
+            localStorage.setItem('barcodeHistory', JSON.stringify(barcodeHistory));
+            renderHistory();
+        }
+
+        // 이력에 추가
+        function addToHistory(text, type, svgData) {
+            // 중복 체크 (같은 텍스트와 타입이면 제거하고 최신으로 추가)
+            barcodeHistory = barcodeHistory.filter(item =>
+                !(item.text === text && item.type === type)
+            );
+
+            // 새 항목 추가 (맨 앞에)
+            barcodeHistory.unshift({
+                text: text,
+                type: type,
+                svg: svgData,
+                timestamp: new Date().toISOString()
+            });
+
+            // 최대 50개까지만 저장
+            if (barcodeHistory.length > 50) {
+                barcodeHistory = barcodeHistory.slice(0, 50);
+            }
+
+            saveHistory();
+        }
+
+        // 이력 렌더링
+        function renderHistory() {
+            const grid = document.getElementById('historyGrid');
+            const emptyMsg = document.getElementById('emptyHistory');
+
+            if (barcodeHistory.length === 0) {
+                grid.innerHTML = '';
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+
+            grid.innerHTML = barcodeHistory.map((item, index) => `
+                <div class="history-item"
+                     draggable="true"
+                     data-index="${index}"
+                     ondragstart="handleDragStart(event)"
+                     ondragover="handleDragOver(event)"
+                     ondrop="handleDrop(event)"
+                     ondragend="handleDragEnd(event)"
+                     ondragleave="handleDragLeave(event)"
+                     onclick="loadFromHistory(${index})">
+                    <button class="history-delete" onclick="event.stopPropagation(); deleteHistoryItem(${index})">✕</button>
+                    <div>${item.svg}</div>
+                    <div class="history-text">${escapeHtml(item.text)}</div>
+                    <div class="history-type">${item.type}</div>
+                </div>
+            `).join('');
+        }
+
+        // 드래그 앤 드롭 관련 변수
+        let draggedIndex = null;
+
+        // 드래그 시작
+        function handleDragStart(e) {
+            draggedIndex = parseInt(e.currentTarget.dataset.index);
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        // 드래그 오버
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+
+            const target = e.currentTarget;
+            if (!target.classList.contains('dragging')) {
+                target.classList.add('drag-over');
+            }
+            return false;
+        }
+
+        // 드래그 나가기
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        // 드롭
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+
+            const targetIndex = parseInt(e.currentTarget.dataset.index);
+
+            if (draggedIndex !== null && draggedIndex !== targetIndex) {
+                // 배열에서 항목 이동
+                const draggedItem = barcodeHistory[draggedIndex];
+                barcodeHistory.splice(draggedIndex, 1);
+                barcodeHistory.splice(targetIndex, 0, draggedItem);
+
+                // 저장 및 재렌더링
+                saveHistory();
+            }
+
+            return false;
+        }
+
+        // 드래그 종료
+        function handleDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+
+            // 모든 drag-over 클래스 제거
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+
+            draggedIndex = null;
+        }
+
+        // 이력에서 바코드 불러오기
+        function loadFromHistory(index) {
+            const item = barcodeHistory[index];
+            if (!item) return;
+
+            document.getElementById('barcodeText').value = item.text;
+            document.querySelector(`input[name="barcodeType"][value="${item.type}"]`).checked = true;
+
+            generateBarcode();
+        }
+
+        // 이력 항목 삭제
+        function deleteHistoryItem(index) {
+            if (confirm('이 바코드를 이력에서 삭제하시겠습니까?')) {
+                barcodeHistory.splice(index, 1);
+                saveHistory();
+            }
+        }
+
+        // HTML 이스케이프
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            const successDiv = document.getElementById('successMessage');
+            successDiv.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function validateInput(text, type) {
+            if (!text || text.trim() === '') {
+                throw new Error('바코드 내용을 입력해주세요.');
+            }
+
+            if (type === 'CODE128') {
+                if (text.length > 80) {
+                    throw new Error(`Code128은 최대 80자까지 지원합니다. (현재: ${text.length}자)`);
+                }
+                for (let char of text) {
+                    if (char.charCodeAt(0) > 127) {
+                        throw new Error('Code128은 ASCII 문자만 지원합니다. (한글, 이모지 등 사용 불가)');
+                    }
+                }
+            } else if (type === 'CODE39') {
+                if (text.length > 43) {
+                    throw new Error(`Code39는 최대 43자까지 지원합니다. (현재: ${text.length}자)`);
+                }
+                const validChars = /^[A-Z0-9\-\.\$\/\+% ]+$/;
+                if (!validChars.test(text)) {
+                    const hasLowercase = /[a-z]/.test(text);
+                    let suggestion = '';
+                    if (hasLowercase) {
+                        suggestion = '\n\n💡 소문자를 사용하려면 Code128을 선택하세요.';
+                    }
+                    throw new Error('Code39는 대문자, 숫자, 특수문자(-. $/+%)만 지원합니다.' + suggestion);
+                }
+            }
+        }
+
+        function generateBarcode() {
+            hideMessages();
+
+            const text = document.getElementById('barcodeText').value;
+            const type = document.querySelector('input[name="barcodeType"]:checked').value;
+
+            try {
+                validateInput(text, type);
+
+                JsBarcode("#barcodeCanvas", text, {
+                    format: type,
+                    width: 2,
+                    height: 100,
+                    displayValue: true,
+                    fontSize: 16,
+                    margin: 10,
+                    background: '#ffffff',
+                    lineColor: '#000000'
+                });
+
+                document.getElementById('welcomeMessage').classList.add('hidden');
+                document.getElementById('barcodeCanvas').classList.remove('hidden');
+                document.getElementById('downloadBtn').disabled = false;
+
+                currentBarcodeText = text;
+                currentBarcodeType = type;
+
+                // 이력에 추가
+                const svg = document.getElementById('barcodeCanvas');
+                const svgData = new XMLSerializer().serializeToString(svg);
+                addToHistory(text, type, svgData);
+
+                showSuccess('✅ 바코드가 생성되었습니다!');
+
+            } catch (error) {
+                showError('❌ ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function downloadBarcode() {
+            if (!currentBarcodeText) {
+                showError('먼저 바코드를 생성해주세요.');
+                return;
+            }
+
+            try {
+                const svg = document.getElementById('barcodeCanvas');
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        const fileName = `barcode_${currentBarcodeText.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+
+                        link.href = url;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+
+                        showSuccess(`✅ 바코드가 다운로드되었습니다: ${fileName}`);
+                    });
+                };
+
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+
+            } catch (error) {
+                showError('❌ 다운로드 중 오류가 발생했습니다: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('barcodeText').value = '';
+            document.getElementById('barcodeCanvas').classList.add('hidden');
+            document.getElementById('welcomeMessage').classList.remove('hidden');
+            document.getElementById('downloadBtn').disabled = true;
+
+            currentBarcodeText = '';
+            currentBarcodeType = 'CODE128';
+
+            hideMessages();
+            document.getElementById('barcodeText').focus();
+        }
+    </script>
+</body>
+</html>
