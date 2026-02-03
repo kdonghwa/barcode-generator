@@ -3,6 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="무료 온라인 바코드 생성기. Code128, Code39 바코드를 쉽고 빠르게 생성하고 PNG 이미지로 다운로드하세요. Free Online Barcode Generator. Create and download Code128, Code39 barcodes easily.">
+    <meta name="keywords" content="바코드 생성기, 무료 바코드, Code128, Code39, 바코드 만들기, 온라인 바코드, Barcode Generator, Free Barcode, Online Barcode Maker, Barcode Creator">
+    <meta name="author" content="MintSoft">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="🏷️ 무료 온라인 바코드 생성기 (Free Online Barcode Generator)">
+    <meta property="og:description" content="설치 없이 브라우저에서 바로 Code128, Code39 바코드를 생성하고 다운로드하세요. Create and download Code128, Code39 barcodes instantly in your browser.">
+    <meta property="og:image" content="https://kdonghwa.github.io/barcode-generator/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="🏷️ 무료 온라인 바코드 생성기 (Free Online Barcode Generator)">
+    <meta name="twitter:description" content="설치 없이 브라우저에서 바로 Code128, Code39 바코드를 생성하고 다운로드하세요. Create and download Code128, Code39 barcodes instantly in your browser.">
+    <meta name="twitter:image" content="https://kdonghwa.github.io/barcode-generator/og-image.png" />
+
     <title>바코드 생성기</title>
 
     <!-- Google tag (gtag.js) -->
@@ -39,6 +58,23 @@
             width: 100%;
             padding: 40px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-selector select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            font-size: 0.9em;
+            cursor: pointer;
+            outline: none;
         }
 
         h1 {
@@ -368,6 +404,12 @@
             .history-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .lang-selector {
+                position: static;
+                text-align: right;
+                margin-bottom: 10px;
+            }
         }
 
         .footer {
@@ -384,56 +426,67 @@
 </head>
 <body>
     <div class="container">
-        <h1>🏷️ 바코드 생성기</h1>
-        <p class="subtitle">Code128 / Code39 바코드를 생성하고 다운로드하세요</p>
+        <div class="lang-selector">
+            <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <option value="ko">한국어</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+                <option value="ja">日本語</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="title">🏷️ 바코드 생성기</h1>
+        <p class="subtitle" data-i18n="subtitle">Code128 / Code39 바코드를 생성하고 다운로드하세요</p>
 
         <div id="errorMessage" class="error-message"></div>
         <div id="successMessage" class="success-message"></div>
 
         <div class="input-section">
             <div class="form-group">
-                <label for="barcodeText">바코드 내용</label>
+                <label for="barcodeText" data-i18n="inputLabel">바코드 내용</label>
                 <input
                     type="text"
                     id="barcodeText"
                     placeholder="예: ITEM-12345"
                     autocomplete="off"
+                    data-i18n-placeholder="placeholder"
                 >
             </div>
 
             <div class="form-group">
-                <label>바코드 타입</label>
+                <label data-i18n="barcodeTypeLabel">바코드 타입</label>
                 <div class="radio-group">
                     <div class="radio-option">
                         <input type="radio" id="code128" name="barcodeType" value="CODE128" checked>
-                        <label for="code128" style="margin: 0; font-weight: normal;">Code128 (권장)</label>
+                        <label for="code128" style="margin: 0; font-weight: normal;" data-i18n="code128Label">Code128 (권장)</label>
                     </div>
                     <div class="radio-option">
                         <input type="radio" id="code39" name="barcodeType" value="CODE39">
-                        <label for="code39" style="margin: 0; font-weight: normal;">Code39</label>
+                        <label for="code39" style="margin: 0; font-weight: normal;" data-i18n="code39Label">Code39</label>
                     </div>
                 </div>
                 <div class="help-text">
-                    <strong>Code128:</strong> 대소문자, 숫자, 특수문자 지원 (최대 80자)<br>
-                    <strong>Code39:</strong> 대문자, 숫자, 일부 특수문자만 지원 (최대 43자)
+                    <div data-i18n="helpTextCode128"><strong>Code128:</strong> 대소문자, 숫자, 특수문자 지원 (최대 80자)</div>
+                    <div data-i18n="helpTextCode39"><strong>Code39:</strong> 대문자, 숫자, 일부 특수문자만 지원 (최대 43자)</div>
                 </div>
             </div>
 
             <div class="button-group">
-                <button class="btn-primary" onclick="generateBarcode()">바코드 생성</button>
-                <button class="btn-secondary" onclick="clearAll()">초기화</button>
+                <button class="btn-primary" onclick="generateBarcode()" data-i18n="generateBtn">바코드 생성</button>
+                <button class="btn-secondary" onclick="clearAll()" data-i18n="clearBtn">초기화</button>
             </div>
         </div>
 
         <div class="preview-section" id="previewSection">
-            <div class="welcome-message" id="welcomeMessage">
+            <div class="welcome-message" id="welcomeMessage" data-i18n="welcomeMessage">
                 바코드 내용을 입력하고<br>"바코드 생성" 버튼을 클릭하세요
             </div>
             <svg id="barcodeCanvas" class="hidden"></svg>
         </div>
 
         <div class="button-group">
-            <button class="btn-success" id="downloadBtn" onclick="downloadBarcode()" disabled>
+            <button class="btn-success" id="downloadBtn" onclick="downloadBarcode()" disabled data-i18n="downloadBtn">
                 이미지 다운로드 (PNG)
             </button>
         </div>
@@ -441,31 +494,228 @@
         <!-- 바코드 이력 섹션 -->
         <div class="history-section">
             <div class="history-header">
-                <h2>📋 바코드 이력</h2>
+                <h2 data-i18n="historyHeader">📋 바코드 이력</h2>
             </div>
             <div id="historyGrid" class="history-grid">
                 <!-- 바코드 이력이 여기에 표시됩니다 -->
             </div>
-            <div id="emptyHistory" class="empty-history">
+            <div id="emptyHistory" class="empty-history" data-i18n="emptyHistory">
                 아직 생성된 바코드가 없습니다
             </div>
         </div>
 
-        <div class="footer">
+        <div class="footer" data-i18n="footer">
             ⚡ 브라우저에서 바로 실행 | 설치 불필요 | 이력은 자동 저장됩니다
         </div>
     </div>
 
     <script>
+        const translations = {
+            ko: {
+                title: "🏷️ 바코드 생성기",
+                subtitle: "Code128 / Code39 바코드를 생성하고 다운로드하세요",
+                inputLabel: "바코드 내용",
+                placeholder: "예: ITEM-12345",
+                barcodeTypeLabel: "바코드 타입",
+                code128Label: "Code128 (권장)",
+                code39Label: "Code39",
+                helpTextCode128: "<strong>Code128:</strong> 대소문자, 숫자, 특수문자 지원 (최대 80자)",
+                helpTextCode39: "<strong>Code39:</strong> 대문자, 숫자, 일부 특수문자만 지원 (최대 43자)",
+                generateBtn: "바코드 생성",
+                clearBtn: "초기화",
+                welcomeMessage: "바코드 내용을 입력하고<br>\"바코드 생성\" 버튼을 클릭하세요",
+                downloadBtn: "이미지 다운로드 (PNG)",
+                historyHeader: "📋 바코드 이력",
+                emptyHistory: "아직 생성된 바코드가 없습니다",
+                footer: "⚡ 브라우저에서 바로 실행 | 설치 불필요 | 이력은 자동 저장됩니다",
+                inputRequired: "바코드 내용을 입력해주세요.",
+                code128Max: "Code128은 최대 80자까지 지원합니다. (현재: {length}자)",
+                code128Ascii: "Code128은 ASCII 문자만 지원합니다. (한글, 이모지 등 사용 불가)",
+                code39Max: "Code39는 최대 43자까지 지원합니다. (현재: {length}자)",
+                code39Invalid: "Code39는 대문자, 숫자, 특수문자(-. $/+%)만 지원합니다.",
+                lowercaseSuggestion: "\n\n💡 소문자를 사용하려면 Code128을 선택하세요.",
+                generateFirst: "먼저 바코드를 생성해주세요.",
+                downloadError: "다운로드 중 오류가 발생했습니다: ",
+                successGenerated: "✅ 바코드가 생성되었습니다!",
+                successDownloaded: "✅ 바코드가 다운로드되었습니다: ",
+                confirmDelete: "이 바코드를 이력에서 삭제하시겠습니까?"
+            },
+            en: {
+                title: "🏷️ Barcode Generator",
+                subtitle: "Generate and download Code128 / Code39 barcodes",
+                inputLabel: "Barcode Content",
+                placeholder: "Ex: ITEM-12345",
+                barcodeTypeLabel: "Barcode Type",
+                code128Label: "Code128 (Recommended)",
+                code39Label: "Code39",
+                helpTextCode128: "<strong>Code128:</strong> Supports case sensitivity, numbers, special chars (Max 80 chars)",
+                helpTextCode39: "<strong>Code39:</strong> Supports uppercase, numbers, some special chars (Max 43 chars)",
+                generateBtn: "Generate Barcode",
+                clearBtn: "Reset",
+                welcomeMessage: "Enter barcode content and<br>click \"Generate Barcode\"",
+                downloadBtn: "Download Image (PNG)",
+                historyHeader: "📋 Barcode History",
+                emptyHistory: "No barcodes generated yet",
+                footer: "⚡ Runs in browser | No installation required | History auto-saved",
+                inputRequired: "Please enter barcode content.",
+                code128Max: "Code128 supports up to 80 characters. (Current: {length})",
+                code128Ascii: "Code128 only supports ASCII characters. (No Korean, Emoji, etc.)",
+                code39Max: "Code39 supports up to 43 characters. (Current: {length})",
+                code39Invalid: "Code39 only supports uppercase, numbers, and special chars (-. $/+%).",
+                lowercaseSuggestion: "\n\n💡 Select Code128 to use lowercase letters.",
+                generateFirst: "Please generate a barcode first.",
+                downloadError: "Error during download: ",
+                successGenerated: "✅ Barcode generated!",
+                successDownloaded: "✅ Barcode downloaded: ",
+                confirmDelete: "Do you want to delete this barcode from history?"
+            },
+            zh: {
+                title: "🏷️ 条形码生成器",
+                subtitle: "生成并下载 Code128 / Code39 条形码",
+                inputLabel: "条形码内容",
+                placeholder: "例如：ITEM-12345",
+                barcodeTypeLabel: "条形码类型",
+                code128Label: "Code128 (推荐)",
+                code39Label: "Code39",
+                helpTextCode128: "<strong>Code128：</strong>支持大小写、数字、特殊字符（最多 80 个字符）",
+                helpTextCode39: "<strong>Code39：</strong>仅支持大写字母、数字、部分特殊字符（最多 43 个字符）",
+                generateBtn: "生成条形码",
+                clearBtn: "重置",
+                welcomeMessage: "输入条形码内容并<br>点击“生成条形码”按钮",
+                downloadBtn: "下载图片 (PNG)",
+                historyHeader: "📋 条形码历史记录",
+                emptyHistory: "尚未生成条形码",
+                footer: "⚡ 浏览器直接运行 | 无需安装 | 历史记录自动保存",
+                inputRequired: "请输入条形码内容。",
+                code128Max: "Code128 最多支持 80 个字符。（当前：{length} 个字符）",
+                code128Ascii: "Code128 仅支持 ASCII 字符。（不支持中文、表情符号等）",
+                code39Max: "Code39 最多支持 43 个字符。（当前：{length} 个字符）",
+                code39Invalid: "Code39 仅支持大写字母、数字和特殊字符 (-. $/+%)。",
+                lowercaseSuggestion: "\n\n💡 如需使用小写字母，请选择 Code128。",
+                generateFirst: "请先生成条形码。",
+                downloadError: "下载时发生错误：",
+                successGenerated: "✅ 条形码已生成！",
+                successDownloaded: "✅ 条形码已下载：",
+                confirmDelete: "您确定要从历史记录中删除此条形码吗？"
+            },
+            ja: {
+                title: "🏷️ バーコード生成ツール",
+                subtitle: "Code128 / Code39 バーコードを生成してダウンロード",
+                inputLabel: "バーコードの内容",
+                placeholder: "例：ITEM-12345",
+                barcodeTypeLabel: "バーコードの種類",
+                code128Label: "Code128 (推奨)",
+                code39Label: "Code39",
+                helpTextCode128: "<strong>Code128：</strong>大文字・小文字、数字、特殊文字に対応（最大80文字）",
+                helpTextCode39: "<strong>Code39：</strong>大文字、数字、一部の特殊文字のみ対応（最大43文字）",
+                generateBtn: "バーコード生成",
+                clearBtn: "リセット",
+                welcomeMessage: "バーコードの内容を入力し、<br>「バーコード生成」ボタンをクリックしてください",
+                downloadBtn: "画像をダウンロード (PNG)",
+                historyHeader: "📋 バーコード履歴",
+                emptyHistory: "生成されたバーコードはまだありません",
+                footer: "⚡ ブラウザで直接実行 | インストール不要 | 履歴は自動保存されます",
+                inputRequired: "バーコードの内容を入力してください。",
+                code128Max: "Code128は最大80文字まで対応しています。（現在：{length}文字）",
+                code128Ascii: "Code128はASCII文字のみ対応しています。（日本語、絵文字などは使用不可）",
+                code39Max: "Code39は最大43文字まで対応しています。（現在：{length}文字）",
+                code39Invalid: "Code39は大文字、数字、特殊文字（-. $/+%）のみ対応しています。",
+                lowercaseSuggestion: "\n\n💡 小文字を使用するにはCode128を選択してください。",
+                generateFirst: "先にバーコードを生成してください。",
+                downloadError: "ダウンロード中にエラーが発生しました：",
+                successGenerated: "✅ バーコードが生成されました！",
+                successDownloaded: "✅ バーコードがダウンロードされました：",
+                confirmDelete: "このバーコードを履歴から削除しますか？"
+            },
+            es: {
+                title: "🏷️ Generador de Códigos de Barras",
+                subtitle: "Genere y descargue códigos de barras Code128 / Code39",
+                inputLabel: "Contenido del Código de Barras",
+                placeholder: "Ej: ITEM-12345",
+                barcodeTypeLabel: "Tipo de Código de Barras",
+                code128Label: "Code128 (Recomendado)",
+                code39Label: "Code39",
+                helpTextCode128: "<strong>Code128:</strong> Admite mayúsculas y minúsculas, números, caracteres especiales (Máx. 80 caracteres)",
+                helpTextCode39: "<strong>Code39:</strong> Admite mayúsculas, números, algunos caracteres especiales (Máx. 43 caracteres)",
+                generateBtn: "Generar Código de Barras",
+                clearBtn: "Restablecer",
+                welcomeMessage: "Ingrese el contenido del código de barras y<br>haga clic en \"Generar Código de Barras\"",
+                downloadBtn: "Descargar Imagen (PNG)",
+                historyHeader: "📋 Historial de Códigos de Barras",
+                emptyHistory: "Aún no se han generado códigos de barras",
+                footer: "⚡ Ejecutar en navegador | No requiere instalación | El historial se guarda automáticamente",
+                inputRequired: "Por favor, ingrese el contenido del código de barras.",
+                code128Max: "Code128 admite hasta 80 caracteres. (Actual: {length})",
+                code128Ascii: "Code128 solo admite caracteres ASCII. (No coreano, emojis, etc.)",
+                code39Max: "Code39 admite hasta 43 caracteres. (Actual: {length})",
+                code39Invalid: "Code39 solo admite mayúsculas, números y caracteres especiales (-. $/+%).",
+                lowercaseSuggestion: "\n\n💡 Seleccione Code128 para usar letras minúsculas.",
+                generateFirst: "Por favor, genere un código de barras primero.",
+                downloadError: "Error durante la descarga: ",
+                successGenerated: "✅ ¡Código de barras generado!",
+                successDownloaded: "✅ Código de barras descargado: ",
+                confirmDelete: "¿Desea eliminar este código de barras del historial?"
+            }
+        };
+
         let currentBarcodeText = '';
         let currentBarcodeType = 'CODE128';
         let barcodeHistory = [];
+        let currentLang = 'ko';
 
         // 페이지 로드 시 이력 불러오기
         window.onload = function() {
+            // 저장된 언어 설정 불러오기
+            const savedLang = localStorage.getItem('barcodeLang');
+            if (savedLang && translations[savedLang]) {
+                currentLang = savedLang;
+                document.getElementById('languageSelect').value = currentLang;
+            }
+
+            applyLanguage(currentLang);
             loadHistory();
             document.getElementById('barcodeText').focus();
         };
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('barcodeLang', lang);
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            document.documentElement.lang = lang;
+            const t = translations[lang];
+
+            // Update document title
+            if (t['title']) {
+                document.title = t['title'];
+            }
+
+            // HTML 요소 텍스트 업데이트
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (t[key]) {
+                    element.innerHTML = t[key];
+                }
+            });
+
+            // Placeholder 업데이트
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (t[key]) {
+                    element.placeholder = t[key];
+                }
+            });
+        }
+
+        function getTranslation(key, params = {}) {
+            let text = translations[currentLang][key] || translations['ko'][key];
+            for (const [paramKey, paramValue] of Object.entries(params)) {
+                text = text.replace(`{${paramKey}}`, paramValue);
+            }
+            return text;
+        }
 
         // 엔터 키로 바코드 생성
         document.getElementById('barcodeText').addEventListener('keypress', function(e) {
@@ -620,7 +870,7 @@
 
         // 이력 항목 삭제
         function deleteHistoryItem(index) {
-            if (confirm('이 바코드를 이력에서 삭제하시겠습니까?')) {
+            if (confirm(getTranslation('confirmDelete'))) {
                 barcodeHistory.splice(index, 1);
                 saveHistory();
             }
@@ -658,30 +908,30 @@
 
         function validateInput(text, type) {
             if (!text || text.trim() === '') {
-                throw new Error('바코드 내용을 입력해주세요.');
+                throw new Error(getTranslation('inputRequired'));
             }
 
             if (type === 'CODE128') {
                 if (text.length > 80) {
-                    throw new Error(`Code128은 최대 80자까지 지원합니다. (현재: ${text.length}자)`);
+                    throw new Error(getTranslation('code128Max', { length: text.length }));
                 }
                 for (let char of text) {
                     if (char.charCodeAt(0) > 127) {
-                        throw new Error('Code128은 ASCII 문자만 지원합니다. (한글, 이모지 등 사용 불가)');
+                        throw new Error(getTranslation('code128Ascii'));
                     }
                 }
             } else if (type === 'CODE39') {
                 if (text.length > 43) {
-                    throw new Error(`Code39는 최대 43자까지 지원합니다. (현재: ${text.length}자)`);
+                    throw new Error(getTranslation('code39Max', { length: text.length }));
                 }
                 const validChars = /^[A-Z0-9\-\.\$\/\+% ]+$/;
                 if (!validChars.test(text)) {
                     const hasLowercase = /[a-z]/.test(text);
                     let suggestion = '';
                     if (hasLowercase) {
-                        suggestion = '\n\n💡 소문자를 사용하려면 Code128을 선택하세요.';
+                        suggestion = getTranslation('lowercaseSuggestion');
                     }
-                    throw new Error('Code39는 대문자, 숫자, 특수문자(-. $/+%)만 지원합니다.' + suggestion);
+                    throw new Error(getTranslation('code39Invalid') + suggestion);
                 }
             }
         }
@@ -718,7 +968,7 @@
                 const svgData = new XMLSerializer().serializeToString(svg);
                 addToHistory(text, type, svgData);
 
-                showSuccess('✅ 바코드가 생성되었습니다!');
+                showSuccess(getTranslation('successGenerated'));
 
             } catch (error) {
                 showError('❌ ' + error.message);
@@ -728,7 +978,7 @@
 
         function downloadBarcode() {
             if (!currentBarcodeText) {
-                showError('먼저 바코드를 생성해주세요.');
+                showError(getTranslation('generateFirst'));
                 return;
             }
 
@@ -756,14 +1006,14 @@
                         document.body.removeChild(link);
                         URL.revokeObjectURL(url);
 
-                        showSuccess(`✅ 바코드가 다운로드되었습니다: ${fileName}`);
+                        showSuccess(getTranslation('successDownloaded') + fileName);
                     });
                 };
 
                 img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
 
             } catch (error) {
-                showError('❌ 다운로드 중 오류가 발생했습니다: ' + error.message);
+                showError('❌ ' + getTranslation('downloadError') + error.message);
                 console.error(error);
             }
         }
