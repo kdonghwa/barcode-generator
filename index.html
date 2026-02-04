@@ -734,8 +734,9 @@
         }
 
         // 엔터 키로 바코드 생성
-        document.getElementById('barcodeText').addEventListener('keypress', function(e) {
+        document.getElementById('barcodeText').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 generateBarcode();
             }
         });
